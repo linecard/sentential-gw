@@ -70,4 +70,4 @@ class APIGatewayV2Response(CamelModel):
     status_code: int
     body: str
     headers: Dict
-    is_base_64_encoded: bool
+    is_base_64_encoded: Optional[bool]
