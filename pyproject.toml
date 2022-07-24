@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sentential-gw"
-version = "0.0.0"
+version = "0.1.0"
 description = "Local HTTP => Lambda invocation proxy"
 authors = ["Brendan Keane <btkeane@gmail.com>"]
 license = "MIT"
