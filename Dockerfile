@@ -1,12 +1,13 @@
 FROM python:3.9
 
+ADD poetry.lock pyproject.toml /src/
+ADD src/ /src/
+
 WORKDIR /src
 
-ADD requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
-ADD src/ app
-WORKDIR /src/app
+RUN pip install poetry && \
+    poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi
 
 ENV LAMBDA_ENDPOINT=${LAMBDA_ENDPOINT}
 
