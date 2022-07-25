@@ -24,7 +24,7 @@ build-backend = "poetry.core.masonry.api"
 version_variable = [
   "pyproject.toml:version",
 ]
-branch = "master"
+branch = "main"
 upload_to_pypi = false
 upload_to_release = false
 build_command = "pip install poetry && poetry build"
