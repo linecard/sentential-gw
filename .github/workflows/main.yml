@@ -41,7 +41,9 @@ jobs:
 
     - name: Version
       id: version
-      run: echo "::set-output name=new_release_version::$(semantic-release print-version)"
+      run: |
+        NEW_RELEASE_VERSION=$(semantic-release print-version)
+        echo "::set-output name=new_release_version::$NEW_RELEASE_VERSION"
 
   build:
     name: Build
