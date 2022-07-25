@@ -20,7 +20,8 @@ jobs:
     permissions:
       contents: write
     outputs:
-      new_release_version: ${{ steps.version.outputs.new_release_version }}
+      current_version: ${{ steps.versions.outputs.current_version }}
+      new_release_version: ${{ steps.versions.outputs.new_release_version }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -39,15 +40,18 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Version
-      id: version
+    - name: Versions
+      id: versions
       run: |
+        CURRENT_VERSION=$(semantic-release print-version --current)
         NEW_RELEASE_VERSION=$(semantic-release print-version)
+        echo "::set-output name=current_version::$CURRENT_VERSION"
         echo "::set-output name=new_release_version::$NEW_RELEASE_VERSION"
 
   build:
     name: Build
     needs: release
+    if: needs.release.outputs.current_version != needs.release.outputs.new_release_version
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
