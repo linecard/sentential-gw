@@ -21,7 +21,7 @@ jobs:
       run: |
         docker login \
           -u ${{ github.actor }} \
-          -p ${{ secrets.GITHUB_TOKEN }} \
+          -p ${{ secrets.REPO_TOKEN }} \
           ${{ env.REGISTRY }}
 
     - name: Set image metadata
