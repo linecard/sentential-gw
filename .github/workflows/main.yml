@@ -3,18 +3,24 @@ name: Main
 on:
   pull_request:
     branches:
-    - master
+    - main
   push:
     branches:
-    - master
+    - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
   release:
     name: Release
-    if: github.event_name == 'push' && github.ref == 'refs/heads/master' && !contains(github.event.head_commit.message, 'chore(release):')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    outputs:
+      new_release_version: ${{ steps.version.outputs.new_release_version }}
     steps:
     - name: Checkout
       uses: actions/checkout@v3
@@ -31,4 +37,40 @@ jobs:
         git config user.email "release-bot@sentential"
         semantic-release publish -D commit_author="release-bot <release-bot@sentential>"
       env:
-        GH_TOKEN: ${{ secrets.REPO_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Version
+      id: version
+      run: echo "::set-output name=new_release_version::$(semantic-release print-version)"
+
+  build:
+    name: Build
+    needs: release
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Log in to registry
+      run: |
+        docker login \
+          -u ${{ github.actor }} \
+          -p ${{ secrets.GITHUB_TOKEN }} \
+          ${{ env.REGISTRY }}
+
+    - name: Set image metadata
+      id: meta
+      uses: docker/metadata-action@v3
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          # Use new release version
+          type=raw,value=${{ needs.release.outputs.new_release_version }}
+    
+    - name: Build and push image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
