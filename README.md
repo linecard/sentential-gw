@@ -13,4 +13,6 @@ Local HTTP => Lambda invocation proxy designed to replicate the behavior of a La
 1. `python main.py`
 
 # Release
-...
+1. tag `vM.m.v`
+1. prefix commit message with `fix:` or `feat:`
+1. profit
