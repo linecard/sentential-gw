@@ -25,7 +25,7 @@ async def proxy(request):
     event = APIGatewayV2Event(
         raw_path=request.url.path,
         raw_query_string=request.url.query,
-        cookies=[f"{key}={value}" for (key, value) in request.cookies],
+        cookies=[f"{key}={value}" for (key, value) in request.cookies.items()],
         headers=request.headers,
         query_string_parameters=request.query_params,
         path_parameters=request.path_params,
