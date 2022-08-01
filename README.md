@@ -7,7 +7,7 @@ Local HTTP => Lambda invocation proxy designed to replicate the behavior of a La
 
 # Development
 1. create `sntl` project for testing.
-1. launch `sntl` project with `sntl local deploy --no-http`
+1. launch `sntl` project with `sntl local deploy --no-gateway`
 1. in this repo...
 1. `cd src`
 1. `python main.py`
