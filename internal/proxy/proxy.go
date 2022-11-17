@@ -29,7 +29,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		util.Log.Error("error marshalling event", "error", err)
 	}
-	util.Log.Debug("lambda payload constructed", "payload", string(payload))
+	util.Log.Debug("lambda request", "payload", string(payload))
 
 	client := LambdaAPI(lambda.New(*util.LambdaConfig))
 	invoke, err := Invoke(ctx, client, payload)
@@ -43,7 +43,13 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		util.Log.Error("error unmarshalling response", "error", err)
 	}
 
-	w.Write([]byte(response.Body))
+	// If a function error is returned from invocation, append it to the response body.
+	if invoke.FunctionError != nil {
+		util.Log.Debug("function_error", invoke.FunctionError)
+		w.Write([]byte(response.Body + "\n\n" + *invoke.FunctionError))
+	} else {
+		w.Write([]byte(response.Body))
+	}
 	for name, value := range response.Headers {
 		w.Header().Set(name, value)
 	}
@@ -61,7 +67,7 @@ func Invoke(ctx context.Context, api LambdaAPI, payload []byte) (*lambda.InvokeO
 	if err != nil {
 		return nil, err
 	}
-	util.Log.Debug("lambda response", "response", string(result.Payload))
+	util.Log.Debug("lambda response", "payload", string(result.Payload))
 
 	return result, nil
 }
