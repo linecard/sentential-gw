@@ -1,18 +1,28 @@
 # sentential-gw
 
-[![black](https://github.com/bkeane/sentential-gw/actions/workflows/black.yml/badge.svg)](https://github.com/bkeane/sentential-gw/actions/workflows/black.yml)
-[![main](https://github.com/bkeane/sentential-gw/actions/workflows/main.yml/badge.svg)](https://github.com/bkeane/sentential-gw/actions/workflows/main.yml)
+[![main](https://github.com/wheegee/sentential-gw/actions/workflows/main.yml/badge.svg)](https://github.com/wheegee/sentential-gw/actions/workflows/main.yml)
 
 Local HTTP => Lambda invocation proxy designed to replicate the behavior of a Lambda public URL for local verification and testing.
 
-# Development
-1. create `sntl` project for testing.
-1. launch `sntl` project with `sntl local deploy --no-gateway`
-1. in this repo...
-1. `cd src`
-1. `python main.py`
+## Development
 
-# Release
-1. tag `vM.m.v`
-1. prefix commit message with `fix:` or `feat:`
-1. profit
+### Gateway
+
+```sh
+go mod tidy
+go run main.go
+```
+
+### Sentential
+
+In a different directory, create a [sntl](https://github.com/wheegee/sentential) project for testing
+
+Deploy said `sntl` project locally with:
+```sh
+sntl deploy local
+```
+
+## Release
+
+1. Merge pull request
+1. Push a [semantically versioned](https://semver.org) tag to `main`

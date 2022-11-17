@@ -2,69 +2,56 @@ name: Main
 
 on:
   pull_request:
-    branches:
-    - main
   push:
     branches:
     - main
+    tags:
+    - '*'
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  GO_VERSION: ^1.19.3
 
 jobs:
-  release:
-    name: Release
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, 'chore(release):')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    outputs:
-      current_version: ${{ steps.versions.outputs.current_version }}
-      new_release_version: ${{ steps.versions.outputs.new_release_version }}
+  runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - name: Set up Go
+      uses: actions/setup-go@v3
       with:
-        python-version: 3.9
+        go-version: ${{ env.GO_VERSION }}
 
-    - name: Configure semantic release
-      run: |
-        pip install python-semantic-release
-        git config user.name "sentential[release-bot]"
-        git config user.email "release-bot@sentential"
+    - name: Run tests
+      run: go test -v ./...
 
-    - name: Configure version outputs
-      id: versions
-      continue-on-error: true
-      run: |
-        CURRENT_VERSION=$(semantic-release print-version --current)
-        NEW_RELEASE_VERSION=$(semantic-release print-version)
-        echo "::set-output name=current_version::$CURRENT_VERSION"
-        echo "::set-output name=new_release_version::$NEW_RELEASE_VERSION"
+  release:
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: ${{ env.GO_VERSION }}
 
     - name: Release
-      run: semantic-release publish -D commit_author="release-bot <release-bot@sentential>"
-      env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: goreleaser/goreleaser-action@v3
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build:
-    name: Build
-    needs: release
-    if: needs.release.outputs.current_version != needs.release.outputs.new_release_version
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v2
       
@@ -84,8 +71,7 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
-          # Use new release version
-          type=raw,value=${{ needs.release.outputs.new_release_version }}
+          type=raw,value=${GITHUB_REF#refs/*/}
         flavor: |
           latest=true
     
