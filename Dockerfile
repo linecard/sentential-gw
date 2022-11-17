@@ -1,14 +1,8 @@
-FROM python:3.9
-
-ADD poetry.lock pyproject.toml /src/
-ADD src/ /src/
-
+FROM golang:1.19.3-alpine3.16 AS build
 WORKDIR /src
+ADD . /src
+RUN CGO_ENABLED=0 GOOS=linux go build -o sntl-gw
 
-RUN pip install poetry && \
-    poetry config virtualenvs.create false && \
-    poetry install --no-interaction --no-ansi
-
-ENV LAMBDA_ENDPOINT=${LAMBDA_ENDPOINT}
-
-CMD ["python", "main.py"]
+FROM alpine:3.16 AS src
+COPY --from=build /src/sntl-gw .
+ENTRYPOINT /sntl-gw
