@@ -44,6 +44,10 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
 
+    - name: Configure environment
+      id: context
+      run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
     - name: Release
       uses: goreleaser/goreleaser-action@v3
       with:
@@ -72,7 +76,7 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         tags: |
-          type=raw,value=${GITHUB_REF#refs/*/}
+          type=raw,value=${{ steps.context.outputs.tag }}
         flavor: |
           latest=true
     
