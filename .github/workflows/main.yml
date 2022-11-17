@@ -14,7 +14,8 @@ env:
   GO_VERSION: ^1.19.3
 
 jobs:
-  runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v3
