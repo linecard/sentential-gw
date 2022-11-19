@@ -4,7 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"sentential-gw/internal/util"
+
+	"github.com/wheegee/sentential-gw/internal/util"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-sdk-go-v2/aws"

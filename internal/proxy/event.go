@@ -3,7 +3,8 @@ package proxy
 import (
 	"io"
 	"net/http"
-	"sentential-gw/internal/util"
+
+	"github.com/wheegee/sentential-gw/internal/util"
 
 	"github.com/aws/aws-lambda-go/events"
 )

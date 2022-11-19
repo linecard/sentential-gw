@@ -2,8 +2,9 @@ package main
 
 import (
 	"net/http"
-	"sentential-gw/internal/proxy"
-	"sentential-gw/internal/util"
+
+	"github.com/wheegee/sentential-gw/internal/proxy"
+	"github.com/wheegee/sentential-gw/internal/util"
 )
 
 func main() {
