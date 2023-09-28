@@ -16,9 +16,45 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1695830400,
+        "narHash": "sha256-gToZXQVr0G/1WriO83olnqrLSHF2Jb8BPcmCt497ro0=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "8a86b98f0ba1c405358f1b71ff8b5e1d317f5db2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "sntlGw": "sntlGw"
+      }
+    },
+    "sntlGw": {
+      "inputs": {
+        "nixpkgs": "nixpkgs_2"
+      },
+      "locked": {
+        "lastModified": 1695938874,
+        "narHash": "sha256-en+3gE9VrnFF7PrHHI+d5RT8AH2cklX4dOgv8odAtCA=",
+        "owner": "linecard",
+        "repo": "sentential-gw",
+        "rev": "63ad3a5fc5cd187ee0199f7a15af3ac1c58a5311",
+        "type": "github"
+      },
+      "original": {
+        "owner": "linecard",
+        "ref": "flake",
+        "repo": "sentential-gw",
+        "type": "github"
       }
     }
   },
