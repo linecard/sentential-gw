@@ -14,6 +14,7 @@ Intended to be utilized alongside [sentential](https://github.com/wheegee/senten
 ### Gateway
 
 ```sh
+cd src
 go mod tidy
 go run main.go
 ```

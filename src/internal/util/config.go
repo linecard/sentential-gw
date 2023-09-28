@@ -19,7 +19,7 @@ func init() {
 	Log = hclog.New(&hclog.LoggerOptions{
 		Level: hclog.LevelFromString(level),
 	})
-	Port = fmt.Sprintf(":%s", GetEnv("PORT", "8081"))
+	Port = fmt.Sprintf(":%s", GetEnv("PORT", "8999"))
 	LambdaConfig = &lambda.Options{
 		Region: GetEnv("AWS_REGION", "us-west-2"),
 		EndpointResolver: lambda.EndpointResolverFromURL(
