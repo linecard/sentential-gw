@@ -1,1 +1,4 @@
 sntl-gw
+*.tar.gz
+config.json
+manifest.json
