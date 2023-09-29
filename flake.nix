@@ -8,14 +8,13 @@
   outputs = { self, nixpkgs, flake-utils, sntlGw, ... }:
   let system = flake-utils.lib.system;
   in flake-utils.lib.eachSystem [
-    "x86_64-linux"
-    "aarch64-linux"
+    system.x86_64-linux
+    system.aarch64-linux
   ] (system:
     let
       pkgs = nixpkgs.legacyPackages.${system};
 
       build-sntlGw = (pkgs:
-        # Build the go binary for each target
         let
           binary = pkgs.stdenv.mkDerivation {
             __noChroot = true;
