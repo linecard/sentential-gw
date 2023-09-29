@@ -6,7 +6,7 @@ default:
 
 # load image(s) into docker
 load image tag:
-  docker load < {{image}}-{{tag}}.tar.gz
+  docker load < image.tar.gz
   docker tag {{image}}:{{tag}} {{image}}:latest
 
 # build OCI-compliant image
@@ -14,7 +14,7 @@ build image tag arch=arch: (manifest image tag arch)
   #!/usr/bin/env bash
   cd image
   rm -rf layer
-  tar -czvf ../{{image}}-{{tag}}.tar.gz *
+  tar -czvf ../image.tar.gz *
   cd ../
 
 [private]
@@ -36,7 +36,7 @@ manifest image tag arch: (config image arch)
   EOF
 
 [private]
-config image arch: (layer image arch)
+config image arch: (layer arch)
   #!/usr/bin/env bash
   cd image
   diff_digest=$(gunzip < layer.tar.gz | sha256sum | sed 's/  -//')
@@ -46,7 +46,7 @@ config image arch: (layer image arch)
     "os": "linux",
     "config": {
       "Env": ["PATH=/bin"],
-      "Entrypoint": ["{{image}}"]
+      "Entrypoint": ["app"]
     },
     "rootfs": {
       "type": "layers",
@@ -56,16 +56,16 @@ config image arch: (layer image arch)
   EOF
 
 [private]
-layer image arch: (binary image arch)
+layer arch: (binary arch)
   #!/usr/bin/env bash
   cd image/layer
   tar -czvf ../layer.tar.gz *
 
 [private]
-binary image arch: tree 
+binary arch: tree 
   #!/usr/bin/env bash
   GOOS=linux GOARCH={{arch}} \
-    go build -o image/layer/bin/{{image}}
+    go build -o image/layer/bin/app
 
 [private]
 tree: 
