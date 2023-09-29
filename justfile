@@ -64,7 +64,7 @@ layer arch: (binary arch)
 [private]
 binary arch: tree 
   #!/usr/bin/env bash
-  GOOS=linux GOARCH={{arch}} \
+  CGO_ENABLED=0 GOOS=linux GOARCH={{arch}} \
     go build -o image/layer/bin/app
 
 [private]
