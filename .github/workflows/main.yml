@@ -68,6 +68,6 @@ jobs:
     - name: Build image
       uses: linecard/nixless@main
       with:
-        registry: ${{ env.REGISTRY }}
+        registry: ${{ env.REGISTRY }}/linecard
         image: ${{ env.IMAGE_NAME }}
         tag: ${{ steps.context.outputs.tag }}
